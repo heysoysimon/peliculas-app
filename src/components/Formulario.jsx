@@ -1,10 +1,12 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import { DataContext } from '../context/DataContext';
+import Fondo from "../../public/1.jpg"
 
 const Formulario = () => {
   const [titulo, setTitulo] = useState("");
   const [showError, setShowError] = useState(false);
   const { setQuery, error } = useContext(DataContext);
+  const resultsRef = useRef(null);
 
   useEffect(() => {
     if (error) {
@@ -22,11 +24,22 @@ const Formulario = () => {
   const handleSubmit = e => {
     e.preventDefault();
     setQuery(titulo);
+    scrollResultsIntoView();
+  };
+
+  const scrollResultsIntoView = () => {
+    resultsRef.current.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
     <>
-      <div className="Formulario flex flex-col items-center">
+      <div
+        className="Formulario bg-cover min-h-screen flex flex-col justify-center items-center transition"
+        style={{
+          backgroundImage: `linear-gradient(to bottom, rgba(28, 28, 28, 0.5), #1f2937), url(${Fondo})`,
+          backgroundAttachment: 'fixed'
+        }}
+      >
         <h2 className="text-2xl text-amber-400 font-bold mb-4">Encuentra una película</h2>
         <form onSubmit={handleSubmit} className="flex items-center">
           <input
@@ -46,6 +59,10 @@ const Formulario = () => {
             Esta película no existe
           </p>
         )}
+      </div>
+
+      <div ref={resultsRef}>
+        {/* Aquí van los resultados de la búsqueda */}
       </div>
     </>
   );
